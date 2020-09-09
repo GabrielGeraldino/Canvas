@@ -31,7 +31,8 @@ export class HomePage implements OnInit {
     // this.addDesc('szdfhnaiuofhbauiohbfuioajhbfiouahuifaghuifahsduifgasyiu')
   }
 
-  drawImage() {
+  drawImage(position = 0, firstTime = true) {
+    console.log('drawImage');
     const stageCtx = this.canvas.getContext('2d');
 
     stageCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -46,6 +47,7 @@ export class HomePage implements OnInit {
     img.src = this.src;
 
     img.onload = async () => {
+      console.log('drawImage.onload');
       if (img.width > this.canvas.width) {
         this.ratio = this.canvas.width / img.width;
 
@@ -71,26 +73,32 @@ export class HomePage implements OnInit {
       this.addJLogo(stageCtx);
       this.addLogo(stageCtx, this.mainPosition);
       ///////////////////////////////////////////////////////////
-      canvases.forEach(c => {
-        const Ctx = c.getContext('2d');
-        Ctx.clearRect(0, 0, c.width, c.height);
-        let ratio: number;
+      canvases.forEach((c, key) => {
 
-        if (img.width > c.width) {
-          ratio = c.width / img.width;
+        if (firstTime === true || key === (position - 1)) {
 
-        } else if (img.height > c.height) {
-          ratio = c.height / img.height;
+          const Ctx = c.getContext('2d');
+
+          Ctx.clearRect(0, 0, c.width, c.height);
+
+          let ratio: number;
+
+          if (img.width > c.width) {
+            ratio = c.width / img.width;
+
+          } else if (img.height > c.height) {
+            ratio = c.height / img.height;
+          }
+
+          c.width = img.width;
+          c.height = img.height;
+
+          Ctx.drawImage(
+            img, 0, 0, c.width, c.height
+          );
+          this.addJLogo(Ctx);
+          this.addLogo(Ctx, this.positions[canvases.indexOf(c)]);
         }
-
-        c.width = img.width;
-        c.height = img.height;
-
-        Ctx.drawImage(
-          img, 0, 0, c.width, c.height
-        );
-        this.addJLogo(Ctx);
-        this.addLogo(Ctx, this.positions[canvases.indexOf(c)]);
       });
     };
 
