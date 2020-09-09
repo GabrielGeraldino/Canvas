@@ -1,20 +1,48 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <ion-input [(ngModel)]="desc" (ngModelChange)="addDesc()"></ion-input>
+  <ion-item>
+    <ion-textarea>Vertical</ion-textarea>
+    <ion-row>
+      <ion-button (click)="verticalAdd()">+</ion-button>
+      <ion-button>-</ion-button>
+    </ion-row>
+  </ion-item>
+
+  <ion-item>
+    <ion-textarea>Horizontal</ion-textarea>
+    <ion-row>
+      <ion-button>+</ion-button>
+      <ion-button>-</ion-button>
+    </ion-row>
+  </ion-item>
+
+
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <canvas id="myCanvas" style="border: 1px solid black; width: 900px; height: 600px"></canvas>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <ion-col>
+        <canvas id="1" (click)="changeMainframe($event)" name="CPreview"
+          style="border: 1px solid black; width: 300px; margin: 20px"></canvas>
+      </ion-col>
+      <ion-col>
+        <canvas id="2" (click)="changeMainframe($event)" name="CPreview"
+          style="border: 1px solid black; width: 300px; margin: 20px"></canvas>
+      </ion-col>
+      <ion-col>
+        <canvas id="3" (click)="changeMainframe($event)" name="CPreview"
+          style="border: 1px solid black; width: 300px; margin: 20px"></canvas>
+      </ion-col>
+      <ion-col>
+        <canvas id="4" (click)="changeMainframe($event)" name="CPreview"
+          style="border: 1px solid black; width: 300px; margin: 20px"></canvas>
+      </ion-col>
+      <ion-col>
+        <img [src]="imageObj">
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
 </ion-content>
