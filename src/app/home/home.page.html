@@ -1,7 +1,14 @@
 <ion-content [fullscreen]="true">
 
-  <ion-input [(ngModel)]="desc" (ngModelChange)="addDesc()"></ion-input>
   <ion-item>
+    <ion-label>
+      <ion-input [(ngModel)]="desc" (ngModelChange)="addDesc()">Digite algo:</ion-input>
+    </ion-label>
+  </ion-item>
+
+
+
+  <!-- <ion-item>
     <ion-textarea>Vertical</ion-textarea>
     <ion-row>
       <ion-button (click)="verticalAdd()">+</ion-button>
@@ -15,7 +22,7 @@
       <ion-button>+</ion-button>
       <ion-button>-</ion-button>
     </ion-row>
-  </ion-item>
+  </ion-item> -->
 
 
   <ion-grid>
@@ -38,9 +45,6 @@
       <ion-col>
         <canvas id="4" (click)="changeMainframe($event)" name="CPreview"
           style="border: 1px solid black; width: 300px; margin: 20px"></canvas>
-      </ion-col>
-      <ion-col>
-        <img [src]="imageObj">
       </ion-col>
     </ion-row>
   </ion-grid>

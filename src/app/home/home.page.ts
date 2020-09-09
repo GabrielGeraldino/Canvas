@@ -232,9 +232,10 @@ export class HomePage implements OnInit {
     stageCtx.fillText(this.desc, this.horizontalText, this.verticalText);
   }
 
-
   changeMainframe(e: any) {
-    this.mainPosition = this.positions.splice(e.target.id - 1, e.target.id - 1, this.mainPosition).toString();
-    this.drawImage();
+    console.log('changeMainframe');
+    console.log('mainp: ', e.target.id);
+    this.mainPosition = this.positions.splice(e.target.id - 1, e.target.id, this.mainPosition).toString();
+    this.drawImage(e.target.id, false);
   }
 }
