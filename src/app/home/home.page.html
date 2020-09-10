@@ -1,12 +1,97 @@
 <ion-content [fullscreen]="true">
 
-  <ion-item>
-    <ion-label>
-      <ion-input [(ngModel)]="desc" (ngModelChange)="addDesc()">Digite algo:</ion-input>
-    </ion-label>
-  </ion-item>
+  <ion-row>
+    <ion-col class="centerCol">
+      <div>
+        <input required type="file" id="resaleCoverPhoto" class="fileInput" (change)="inputResaleLogo($event)"
+          name="resaleCoverPhoto" />
+        <label for="resaleCoverPhoto">Selecione a logo da revenda
+        </label>
+        <!-- <ion-button for="resaleCoverPhoto">Selecione a logo da revenda</ion-button> -->
+      </div>
+    </ion-col>
 
+    <!-- <ion-col>
+      <ion-item>
+        <ion-label>
+          <ion-input [(ngModel)]="desc">Digite a logo da revenda:</ion-input>
+        </ion-label>
+      </ion-item>
+    </ion-col> -->
 
+    <ion-col class="centerCol">
+      <ion-item lines="full">
+        <ion-label>Categoria</ion-label>
+        <ion-select interface="popover">
+          <ion-select-option value="f">Categoria 1</ion-select-option>
+          <ion-select-option value="m">Categoria 2</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-col>
+
+    <ion-col class="centerCol">
+      <ion-item lines="full">
+        <ion-label>Produto</ion-label>
+        <ion-select interface="popover">
+          <ion-select-option value="f">Produto 1</ion-select-option>
+          <ion-select-option value="m">Produto 2</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-col>
+
+  </ion-row>
+
+  <ion-item-divider *ngIf="imgesLoaded">
+  </ion-item-divider>
+
+  <ion-row style="margin-top: 30px;">
+    <ion-slides [options]="imagesOptions">
+      <ion-slide *ngFor="let img of images; let indexOfElement = index">
+        <ion-img [class]="this.src === img ? 'border' : null" [src]="img" style="width: 263px;"
+          (click)="changeImg(indexOfElement)"></ion-img>
+      </ion-slide>
+    </ion-slides>
+  </ion-row>
+
+  <ion-item-divider>
+  </ion-item-divider>
+
+  <ion-row>
+
+    <!-- <ion-col class="centerCol">
+      <ion-button (click)="clearText()">Resetar imagem</ion-button>
+    </ion-col> -->
+
+    <ion-col>
+      <ion-item>
+        <ion-label>
+          <ion-input [(ngModel)]="desc">Digite algo (Opcional):</ion-input>
+        </ion-label>
+      </ion-item>
+    </ion-col>
+
+    <ion-col>
+      <ion-item lines="full">
+        <ion-label>Posição do texto</ion-label>
+        <ion-select interface="popover" [(ngModel)]="descPosition" [value]="descPosition">
+          <ion-select-option value="center">Centralizado</ion-select-option>
+          <ion-select-option value="top-right">Superior direito</ion-select-option>
+          <ion-select-option value="top-left">Superior esquerdo</ion-select-option>
+          <ion-select-option value="bottom-right">Inferior direito</ion-select-option>
+          <ion-select-option value="bottom-left">Inferior esquerdo</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-col>
+
+    <ion-col class="centerCol">
+      <ion-button (click)="drawImage()">Gerar imagem</ion-button>
+    </ion-col>
+
+    <ion-col class="centerCol">
+      <ion-button (click)="download()">Download Imagem</ion-button>
+    </ion-col>
+
+  </ion-row>
 
   <!-- <ion-item>
     <ion-textarea>Vertical</ion-textarea>
@@ -24,11 +109,11 @@
     </ion-row>
   </ion-item> -->
 
+  <ion-row class="ion-justify-content-center">
+    <canvas id="myCanvas" style="border: 1px solid black; width: 900px; height: 600px"></canvas>
+  </ion-row>
 
   <ion-grid>
-    <ion-row class="ion-justify-content-center">
-      <canvas id="myCanvas" style="border: 1px solid black; width: 900px; height: 600px"></canvas>
-    </ion-row>
     <ion-row class="ion-justify-content-center">
       <ion-col>
         <canvas id="1" (click)="changeMainframe($event)" name="CPreview"
@@ -47,6 +132,7 @@
           style="border: 1px solid black; width: 300px; margin: 20px"></canvas>
       </ion-col>
     </ion-row>
+
   </ion-grid>
 
 </ion-content>

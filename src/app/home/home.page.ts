@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { SharedService } from '../services/shared/shared.service';
+import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 
 @Component({
   selector: 'app-home',
@@ -8,19 +10,38 @@ import { Component, OnInit } from '@angular/core';
 export class HomePage implements OnInit {
 
   canvas: any;
-  src = '../assets/canvasTest.jpg';
+  images = ['../assets/uniportPlanter11.jpg', '../assets/uniportPlanter12.jpg', '../assets/uniportPlanter13.jpg', '../assets/uniportPlanter14.jpg', '../assets/uniportPlanter15.jpg'];
+  src: string;
   JlogoSrc = '../assets/jactoLogo.png';
   JlogoSrcNegative = '../assets/JactoLogoNegative.png';
-  logo = '../assets/copercitrus.png';
+  logo: string;
+  coverFilename: string;
   ratio: number;
   mainPosition = 'center';
-  positions = ['top-right', 'top-left', 'bottom-right', 'bottom-left'];
+  logoPositions = ['top-right', 'top-left', 'bottom-right', 'bottom-left'];
   desc: string;
+  coverLoaded: boolean;
 
   verticalText = 3570;
   horizontalText = 2380;
 
-  constructor() { }
+  imgesLoaded = false; // verifica se as imagens foram carregadas para mostrar o divider
+  completeDrawer = false;
+
+  descPosition: string;
+  descColor: string;
+
+  imagesOptions = {
+    direction: 'horizontal',
+    slidesPerView: 4.3,
+    freeMode: true,
+    spaceBetween: 0.2
+  };
+
+  constructor(
+    private sharedService: SharedService,
+    private transfer: FileTransfer,
+  ) { }
 
   ngOnInit() {
     this.canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
@@ -28,11 +49,14 @@ export class HomePage implements OnInit {
 
   ionViewWillEnter() {
     this.drawImage();
+    this.imgesLoaded = true;
     // this.addDesc('szdfhnaiuofhbauiohbfuioajhbfiouahuifaghuifahsduifgasyiu')
   }
 
-  drawImage(position = 0, firstTime = true) {
-    console.log('drawImage');
+  async drawImage(position = 0, clearAll = true) {
+
+    this.completeDrawer = true;
+
     const stageCtx = this.canvas.getContext('2d');
 
     stageCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -73,9 +97,9 @@ export class HomePage implements OnInit {
       this.addJLogo(stageCtx);
       this.addLogo(stageCtx, this.mainPosition);
       ///////////////////////////////////////////////////////////
-      canvases.forEach((c, key) => {
+      canvases.forEach(async (c, key) => {
 
-        if (firstTime === true || key === (position - 1)) {
+        if (clearAll === true || key === (position - 1)) {
 
           const Ctx = c.getContext('2d');
 
@@ -97,11 +121,11 @@ export class HomePage implements OnInit {
             img, 0, 0, c.width, c.height
           );
           this.addJLogo(Ctx);
-          this.addLogo(Ctx, this.positions[canvases.indexOf(c)]);
+          this.addLogo(Ctx, this.logoPositions[canvases.indexOf(c)]);
         }
+
       });
     };
-
   }
 
 
@@ -191,46 +215,96 @@ export class HomePage implements OnInit {
             verticalP = (this.canvas.height / 2 - (logo.height / 2));
             break;
           case 'top-right':
-            horizontalP = (this.canvas.width / 4 - (logo.width / 2));
+            horizontalP = ((this.canvas.width - this.canvas.width / 4) - (logo.width / 2));
             verticalP = (this.canvas.height / 4 - (logo.height / 2));
             break;
           case 'top-left':
-            horizontalP = ((this.canvas.width - this.canvas.width / 4) - (logo.width / 2));
+            horizontalP = (this.canvas.width / 4 - (logo.width / 2));
             verticalP = (this.canvas.height / 4 - (logo.height / 2));
             break;
           case 'bottom-right':
-            horizontalP = (this.canvas.width / 4 - (logo.width / 2));
-            verticalP = ((this.canvas.height - this.canvas.height / 4) - (logo.height / 2));
-            break;
-          case 'bottom-left':
             horizontalP = ((this.canvas.width - this.canvas.width / 4) - (logo.width / 2));
             verticalP = ((this.canvas.height - this.canvas.height / 4) - (logo.height / 2));
             break;
+          case 'bottom-left':
+            horizontalP = (this.canvas.width / 4 - (logo.width / 2));
+            verticalP = ((this.canvas.height - this.canvas.height / 4) - (logo.height / 2));
+            break;
         }
-
         stageCtx.drawImage(logo, horizontalP, verticalP, logo.width, logo.height);
+
+        this.addDesc(stageCtx, [position, horizontalP, verticalP, logo.height]);
       };
-
-
-
     }
 
   }
-  addDesc() {
-    const stageCtx = this.canvas.getContext('2d');
 
-    stageCtx.fillStyle = 'white';
-    stageCtx.font = '500px Calibri';
-    stageCtx.fillStyle = 'white';
-    console.log('CANVAS WIDTH', this.canvas.width / 2);
-    console.log('CANVAS HEIGTH', this.canvas.height / 2);
+  addDesc(Ctx, logoP: any[] = []) {
+    let horizontalP: number;
+    let verticalP: number;
 
+    Ctx.fillStyle = 'white';
+    Ctx.font = '250px Calibri';
+    Ctx.fillStyle = 'white';
+    Ctx.textAlign = 'center';
 
-    console.log('THIS.VERTICAL', this.verticalText);
-    console.log('THIS.HORIZONTAL', this.horizontalText);
+    if (this.descPosition === logoP[0]) {
+      horizontalP = logoP[1];
+      verticalP = logoP[2];
+      const logoHeight = logoP[3];
 
-    // this.desc !== undefined ? stageCtx.fillText(this.desc, this.canvas.width / 2, this.canvas.height / 2) : null;
-    stageCtx.fillText(this.desc, this.horizontalText, this.verticalText);
+      switch (this.descPosition) {
+        case 'center':
+          verticalP = (this.canvas.height / 2);
+          Ctx.fillText(this.desc, this.canvas.width / 2, verticalP + (logoHeight * 1.4));
+          break;
+        case 'top-right':
+          horizontalP = ((this.canvas.width - this.canvas.width / 5) - (logoHeight / 2));
+          Ctx.fillText(this.desc, horizontalP, verticalP + (logoHeight * 1.4));
+          break;
+        case 'top-left':
+          horizontalP = (this.canvas.width / 4);
+          Ctx.fillText(this.desc, horizontalP, verticalP + (logoHeight * 1.4));
+          break;
+        case 'bottom-right':
+          horizontalP = ((this.canvas.width - this.canvas.width / 5) - (logoHeight / 2));
+          Ctx.fillText(this.desc, horizontalP, verticalP + (logoHeight * 1.4));
+          break;
+        case 'bottom-left':
+          horizontalP = (this.canvas.width / 4);
+          Ctx.fillText(this.desc, horizontalP, verticalP + (logoHeight * 1.4));
+          break;
+      }
+    } else {
+      switch (this.descPosition) {
+        case 'center':
+          horizontalP = (this.canvas.width / 2);
+          verticalP = (this.canvas.height / 2);
+          Ctx.fillText(this.desc, horizontalP, verticalP);
+          break;
+        case 'top-right':
+          horizontalP = ((this.canvas.width - this.canvas.width / 4));
+          verticalP = (this.canvas.height / 4);
+          Ctx.fillText(this.desc, horizontalP, verticalP);
+          break;
+        case 'top-left':
+          horizontalP = (this.canvas.width / 4);
+          verticalP = (this.canvas.height / 4);
+          Ctx.fillText(this.desc, horizontalP, verticalP);
+          break;
+        case 'bottom-right':
+          horizontalP = ((this.canvas.width - this.canvas.width / 4));
+          verticalP = ((this.canvas.height - this.canvas.height / 4));
+          Ctx.fillText(this.desc, horizontalP, verticalP);
+          break;
+        case 'bottom-left':
+          horizontalP = (this.canvas.width / 4);
+          verticalP = ((this.canvas.height - this.canvas.height / 4));
+          Ctx.fillText(this.desc, horizontalP, verticalP);
+          break;
+      }
+
+    }
   }
 
   verticalAdd() {
@@ -241,9 +315,46 @@ export class HomePage implements OnInit {
   }
 
   changeMainframe(e: any) {
-    console.log('changeMainframe');
-    console.log('mainp: ', e.target.id);
-    this.mainPosition = this.positions.splice(e.target.id - 1, e.target.id, this.mainPosition).toString();
+    this.mainPosition = this.logoPositions.splice(e.target.id - 1, e.target.id, this.mainPosition).toString();
     this.drawImage(e.target.id, false);
   }
+
+  changeDescPos() {
+    this.drawImage(0, true);
+  }
+
+  clearText() {
+    const stageCtx = this.canvas.getContext('2d');
+    stageCtx.restore();
+  }
+
+  changeImg(index: number) {
+    this.src = this.images[index];
+  }
+
+  inputResaleLogo(event: any) {
+    this.coverFilename = /[.]/.exec(event.target.value) ? `.${/[^.]+$/.exec(event.target.value)}` : '';
+    if (this.sharedService.checkImg(this.coverFilename)) {
+      const reader = new FileReader();
+      reader.onload = (imageToLoad: any) => {
+        this.logo = imageToLoad.target.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+      this.coverLoaded = true;
+
+      return this.logo;
+    }
+  }
+
+  download() {
+    const url = this.canvas.toDataURL('image/jpg');
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'todo-1.jpg';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+
 }

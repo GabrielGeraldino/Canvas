@@ -25,3 +25,32 @@
 #container a {
   text-decoration: none;
 }
+
+.centerCol {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.border {
+  border: solid 3px orange;
+}
+
+.fileInput {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.fileInput label {
+  color: #717171;
+  background-color: white;
+  display: inline-block;
+  cursor: pointer;
+  padding: 0.5em 1em;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
