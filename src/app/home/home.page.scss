@@ -54,3 +54,19 @@
   border: 1px solid #ccc;
   cursor: pointer;
 }
+
+.labelStyle {
+  color: white;
+  border: 1px solid white;
+  padding: 10px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #f05537 0%, #fa8c30 100%);
+}
+
+ion-content {
+  --background: #f8f8f8;
+}
+
+ion-radio {
+  margin-right: 10px;
+}
