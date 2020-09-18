@@ -53,7 +53,7 @@
       </ion-row>
     </ion-list>
 
-    <ion-list class="j-list">
+    <ion-list class="j-list" style="padding: 3px !important;">
 
       <ion-row>
 
@@ -65,18 +65,41 @@
           </ion-item>
         </ion-col>
 
-        <ion-col>
-          <ion-item lines="full">
-            <ion-label>Posição do texto</ion-label>
-            <ion-select interface="popover" [(ngModel)]="descPosition" [value]="descPosition">
-              <ion-select-option value="center">Centralizado</ion-select-option>
-              <ion-select-option value="top-right">Superior direito</ion-select-option>
-              <ion-select-option value="top-left">Superior esquerdo</ion-select-option>
-              <ion-select-option value="bottom-right">Inferior direito</ion-select-option>
-              <ion-select-option value="bottom-left">Inferior esquerdo</ion-select-option>
-            </ion-select>
-          </ion-item>
-        </ion-col>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-item lines="full">
+                <ion-label>Posição do texto</ion-label>
+                <ion-select interface="popover" [(ngModel)]="descPosition" [value]="descPosition">
+                  <ion-select-option value="center">Centralizado</ion-select-option>
+                  <ion-select-option value="top-right">Superior direito</ion-select-option>
+                  <ion-select-option value="top-left">Superior esquerdo</ion-select-option>
+                  <ion-select-option value="bottom-right">Inferior direito</ion-select-option>
+                  <ion-select-option value="bottom-left">Inferior esquerdo</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-grid>
+            <ion-row>
+              <ion-radio-group style="display: contents;">
+                <ion-col size="6">
+                  <ion-item lines="none" (click)="fontColor = 'white'">
+                    <ion-label>Branco</ion-label>
+                    <ion-radio slot="start" value="white"></ion-radio>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-item lines="none" (click)="fontColor = 'black'">
+                    <ion-label>Preto</ion-label>
+                    <ion-radio slot="start" value="black"></ion-radio>
+                  </ion-item>
+                </ion-col>
+              </ion-radio-group>
+            </ion-row>
+          </ion-grid>
+        </ion-grid>
 
         <ion-col class="centerCol">
           <ion-button class="j-button" (click)="drawImage()">Gerar imagem</ion-button>
@@ -104,35 +127,42 @@
         <ion-col size="1" class="centerCol" style="display: flex; margin-top: 13px;">
           <ion-grid style="height: 100%;">
             <ion-row>
-              <ion-item lines="none">
+              <ion-item lines="none" class="social" (click)="instagram = !instagram">
+                <ion-icon [color]="instagram ? 'primary' : ''" name="logo-instagram" style="margin-right: 5px;">
+                </ion-icon>
                 <ion-label>Instagram</ion-label>
-                <ion-radio slot="start" value="Instagram"></ion-radio>
+                <ion-checkbox checked="true" slot="start" value="instagram"></ion-checkbox>
               </ion-item>
             </ion-row>
             <ion-row>
-              <ion-item lines="none">
+              <ion-item lines="none" class="social" (click)="facebook = !facebook">
+                <ion-icon [color]="facebook ? 'primary' : ''" name="logo-facebook" style="margin-right: 5px;">
+                </ion-icon>
                 <ion-label>Facebook</ion-label>
-                <ion-radio slot="start" value="Facebook"></ion-radio>
+                <ion-checkbox checked="true" slot="start" value="facebook"></ion-checkbox>
               </ion-item>
             </ion-row>
             <ion-row>
-              <ion-item lines="none">
+              <ion-item lines="none" class="social" (click)="twitter = !twitter">
+                <ion-icon [color]="twitter ? 'primary' : ''" name="logo-twitter" style="margin-right: 5px;">
+                </ion-icon>
                 <ion-label>Twitter</ion-label>
-                <ion-radio slot="start" value="Twitter"></ion-radio>
+                <ion-checkbox checked="true" slot="start" value="twitter"></ion-checkbox>
               </ion-item>
             </ion-row>
             <ion-row>
-              <ion-item lines="none">
+              <ion-item lines="none" class="social" (click)="youtube = !youtube">
+                <ion-icon [color]="youtube ? 'primary' : ''" name="logo-youtube" style="margin-right: 5px;">
+                </ion-icon>
                 <ion-label>YouTube</ion-label>
-                <ion-radio slot="start" value="YouTube"></ion-radio>
+                <ion-checkbox checked="true" slot="start" value="youtube"></ion-checkbox>
               </ion-item>
             </ion-row>
             <ion-row style="display: flex; justify-content: center;">
-              <ion-button class="j-button" expand="block" (click)="download()">Download</ion-button>
+              <ion-button class="j-button" expand="block" (click)="resize()">Download</ion-button>
             </ion-row>
           </ion-grid>
         </ion-col>
-
       </ion-row>
     </ion-list>
 

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedService } from '../services/shared/shared.service';
-import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 
 @Component({
   selector: 'app-home',
@@ -31,6 +30,14 @@ export class HomePage implements OnInit {
   descPosition: string;
   descColor: string;
 
+  imageColor: any;
+
+  instagram = true;
+  facebook = true;
+  twitter = true;
+  youtube = true;
+  fontColor: string;
+
   imagesOptions = {
     direction: 'horizontal',
     slidesPerView: 4.3,
@@ -49,10 +56,11 @@ export class HomePage implements OnInit {
   ionViewWillEnter() {
     this.drawImage();
     this.imgesLoaded = true;
-    // this.addDesc('szdfhnaiuofhbauiohbfuioajhbfiouahuifaghuifahsduifgasyiu')
   }
 
   async drawImage(position = 0, clearAll = true) {
+
+    await this.sharedService.showLoading('Estamos montando sua imagem');
 
     this.completeDrawer = true;
 
@@ -77,20 +85,12 @@ export class HomePage implements OnInit {
       } else if (img.height > this.canvas.height) {
         this.ratio = this.canvas.height / img.height;
       }
-      // const oc = document.createElement('canvas');
-      // const octx = oc.getContext('2d');
-
-      // oc.width = img.width;
-      // oc.height = img.height;
-
-      // octx.drawImage(img, 0, 0, oc.width, oc.height);
 
       this.canvas.width = img.width;
       this.canvas.height = img.height;
 
       stageCtx.drawImage(
         img, 0, 0, this.canvas.width, this.canvas.height
-        // oc, 0, 0, oc.width, oc.height, 0, 0, this.canvas.width, this.canvas.height
       );
 
       this.addJLogo(stageCtx);
@@ -119,20 +119,22 @@ export class HomePage implements OnInit {
           Ctx.drawImage(
             img, 0, 0, c.width, c.height
           );
-          this.addJLogo(Ctx);
+          // this.addJLogo(Ctx);
           this.addLogo(Ctx, this.logoPositions[canvases.indexOf(c)]);
         }
 
       });
     };
+
+    this.sharedService.dismissLoading();
   }
 
 
   addJLogo(stageCtx: any) {
     const logo = new Image();
-    const color = this.getAverageRGB(stageCtx);
+    // const color = this.getAverageRGB(stageCtx);
     let logoRatio = 1;
-    logo.src = (((color.r * 299) + (color.g * 587) + (color.b * 114)) / 1000) >= 128 ? this.JlogoSrc : this.JlogoSrcNegative;
+    logo.src = (((this.imageColor.r * 299) + (this.imageColor.g * 587) + (this.imageColor.b * 114)) / 1000) >= 128 ? this.JlogoSrc : this.JlogoSrcNegative;
 
 
     logo.onload = () => {
@@ -151,7 +153,7 @@ export class HomePage implements OnInit {
     };
   }
 
-  getAverageRGB(context) {
+  getAverageRGB(context: any) {
 
     const blockSize = 5; // only visit every 5 pixels
     const defaultRGB = { r: 0, g: 0, b: 0 }; // for non-supporting envs
@@ -242,9 +244,8 @@ export class HomePage implements OnInit {
     let horizontalP: number;
     let verticalP: number;
 
-    Ctx.fillStyle = 'white';
+    Ctx.fillStyle = this.fontColor;
     Ctx.font = '250px Calibri';
-    Ctx.fillStyle = 'white';
     Ctx.textAlign = 'center';
 
     if (this.descPosition === logoP[0]) {
@@ -255,7 +256,7 @@ export class HomePage implements OnInit {
       switch (this.descPosition) {
         case 'center':
           verticalP = (this.canvas.height / 2);
-          Ctx.fillText(this.desc, this.canvas.width / 2, verticalP + (logoHeight * 1.4));
+          Ctx.fillText(this.desc, this.canvas.width / 2, verticalP + (logoHeight * 0.9));
           break;
         case 'top-right':
           horizontalP = ((this.canvas.width - this.canvas.width / 5) - (logoHeight / 2));
@@ -329,6 +330,7 @@ export class HomePage implements OnInit {
 
   changeImg(index: number) {
     this.src = this.images[index];
+    this.imageColor = this.getAverageRGB(this.canvas.getContext('2d'));
   }
 
   inputResaleLogo(event: any) {
@@ -345,7 +347,7 @@ export class HomePage implements OnInit {
     }
   }
 
-  download() {
+  async download() {
     const url = this.canvas.toDataURL('image/jpg');
     const a = document.createElement('a');
     a.style.display = 'none';
@@ -355,4 +357,19 @@ export class HomePage implements OnInit {
     a.click();
     window.URL.revokeObjectURL(url);
   }
+
+  async resize() {
+    this.canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    const context = this.canvas.getContext('2d');
+    // context.strokeRect(0, 0, 100, 100);
+    // const imgwidth = sourceimage.offsetWidth;
+    // const imgheight = sourceimage.offsetHeight;
+    context.drawImage(
+      this.canvas, 0, 0, 1, 1
+    );
+
+    await this.download();
+
+  }
+
 }
