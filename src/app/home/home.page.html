@@ -1,4 +1,4 @@
-<ion-content [fullscreen]="true" no-bounce>
+<ion-content [fullscreen]="true">
 
   <div class="j-card">
 
@@ -8,14 +8,18 @@
           <div>
             <input required type="file" id="resaleCoverPhoto" class="fileInput" (change)="inputResaleLogo($event)"
               name="resaleCoverPhoto" />
-            <label for="resaleCoverPhoto" class="labelStyle">
+            <label for="resaleCoverPhoto" class="labelStyle" *ngIf="!logo">
               <ion-icon name="cloud-upload-outline" style="vertical-align: middle; margin: 10px; font-size: 20px;">
               </ion-icon>Selecione a logo da revenda
+            </label>
+            <label for="resaleCoverPhoto" class="labelStyle" *ngIf="logo">
+              <ion-icon name="checkmark-outline" style="vertical-align: middle; margin: 10px; font-size: 20px;">
+              </ion-icon>Logo selecionada
             </label>
           </div>
         </ion-col>
 
-        <ion-col class="centerCol">
+        <!-- <ion-col class="centerCol">
           <ion-item lines="full">
             <ion-label>Categoria</ion-label>
             <ion-select interface="popover">
@@ -33,7 +37,7 @@
               <ion-select-option value="m">Produto 2</ion-select-option>
             </ion-select>
           </ion-item>
-        </ion-col>
+        </ion-col> -->
 
       </ion-row>
     </ion-list>

@@ -49,7 +49,6 @@ export class HomePage implements OnInit {
   ionViewWillEnter() {
     this.drawImage();
     this.imgesLoaded = true;
-    this.canvasText = this.canvas.getContext('2d');
     // this.addDesc('szdfhnaiuofhbauiohbfuioajhbfiouahuifaghuifahsduifgasyiu')
   }
 
