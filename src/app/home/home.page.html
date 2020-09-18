@@ -45,10 +45,15 @@
   </ion-item-divider>
 
   <ion-row style="margin-top: 30px;">
+    <ion-searchbar debounce="500" (ionChange)="search()" [(ngModel)]="filter" placeholder="Filtrar imagens" ></ion-searchbar>
     <ion-slides [options]="imagesOptions">
-      <ion-slide *ngFor="let img of images; let indexOfElement = index">
-        <ion-img [class]="this.src === img ? 'border' : null" [src]="img" style="width: 263px;"
-          (click)="changeImg(indexOfElement)"></ion-img>
+      <ion-slide *ngFor="let img of images; let indexOfElement = index" style="text-align: center">
+        <div [class]="this.src === img?.file?.pt_BR?.url ? 'border' : null" class="figContainer">
+          <figure class="image"[style.backgroundImage]="'url(' + img?.file?.pt_BR?.thumb_url + ')'" 
+            (click)="changeImg(indexOfElement)">
+          </figure>
+          <label>{{img?.name?.pt_BR}}</label>
+        </div>
       </ion-slide>
     </ion-slides>
   </ion-row>

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedService } from '../services/shared/shared.service';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+import { ApiService } from '../services/api/api.service';
+import { fromEvent } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +12,7 @@ import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-nati
 export class HomePage implements OnInit {
 
   canvas: any;
-  images = ['../assets/uniportPlanter11.jpg', '../assets/uniportPlanter12.jpg', '../assets/uniportPlanter13.jpg', '../assets/uniportPlanter14.jpg', '../assets/uniportPlanter15.jpg'];
+  images: any[];
   src: string;
   JlogoSrc = '../assets/jactoLogo.png';
   JlogoSrcNegative = '../assets/JactoLogoNegative.png';
@@ -21,6 +23,8 @@ export class HomePage implements OnInit {
   logoPositions = ['top-right', 'top-left', 'bottom-right', 'bottom-left'];
   desc: string;
   coverLoaded: boolean;
+  filter: string;
+  trueImages = [];
 
   verticalText = 3570;
   horizontalText = 2380;
@@ -41,16 +45,26 @@ export class HomePage implements OnInit {
   constructor(
     private sharedService: SharedService,
     private transfer: FileTransfer,
-  ) { }
+    private apiService: ApiService,
+  ) { this.getImages(); }
 
   ngOnInit() {
     this.canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
   }
 
   ionViewWillEnter() {
-    this.drawImage();
+    
     this.imgesLoaded = true;
     // this.addDesc('szdfhnaiuofhbauiohbfuioajhbfiouahuifaghuifahsduifgasyiu')
+  }
+
+  getImages(){
+    this.apiService.get().toPromise()
+    .then((images: any[]) => {
+      this.trueImages = images;
+      this.images = images;
+      console.log(this.images);
+    });
   }
 
   async drawImage(position = 0, clearAll = true) {
@@ -154,8 +168,8 @@ export class HomePage implements OnInit {
 
   getAverageRGB(context) {
 
-    const blockSize = 5; // only visit every 5 pixels
-    const defaultRGB = { r: 0, g: 0, b: 0 }; // for non-supporting envs
+    const blockSize = 5;
+    const defaultRGB = { r: 0, g: 0, b: 0 };
     let data: any;
     let i = -4;
     let length: any;
@@ -166,7 +180,6 @@ export class HomePage implements OnInit {
     try {
       data = context.getImageData(0, 0, this.canvas.width, this.canvas.height);
     } catch (e) {
-      /* security error, img on diff domain */
       return defaultRGB;
     }
 
@@ -179,7 +192,6 @@ export class HomePage implements OnInit {
       rgb.b += data.data[i + 2];
     }
 
-    // ~~ used to floor values
     rgb.r = ~~(rgb.r / count);
     rgb.g = ~~(rgb.g / count);
     rgb.b = ~~(rgb.b / count);
@@ -329,7 +341,8 @@ export class HomePage implements OnInit {
   }
 
   changeImg(index: number) {
-    this.src = this.images[index];
+    this.src = this.images[index].file.pt_BR.url;
+    console.log("image: ",this.images[index]);
   }
 
   inputResaleLogo(event: any) {
@@ -355,6 +368,15 @@ export class HomePage implements OnInit {
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
+  }
+
+  search(){
+    this.images = [];
+    this.trueImages.forEach(image => {
+      if (image.name.pt_BR.toLowerCase().includes(this.filter.toLowerCase())){
+        this.images.push(image);
+      }
+    });
   }
 
 }
