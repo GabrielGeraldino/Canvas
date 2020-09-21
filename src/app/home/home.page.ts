@@ -12,7 +12,7 @@ export class HomePage implements OnInit {
   images = ['../assets/uniportPlanter11.jpg', '../assets/uniportPlanter12.jpg', '../assets/uniportPlanter13.jpg', '../assets/uniportPlanter14.jpg', '../assets/uniportPlanter15.jpg'];
   src: string;
   JlogoSrc = '../assets/jactoLogo.png';
-  JlogoSrcNegative = '../assets/JactoLogoNegative.png';
+  JlogoSrcNegative = '../assets/jacto-negative.png';
   logo: string;
   coverFilename: string;
   ratio: number;
@@ -149,7 +149,7 @@ export class HomePage implements OnInit {
       logo.width = logo.width * (logoRatio);
       logo.height = logo.height * (logoRatio);
 
-      stageCtx.drawImage(logo, (this.canvas.width - (logo.width + 50)), 0, logo.width, logo.height);
+      stageCtx.drawImage(logo, (this.canvas.width - (logo.width + 300)), 300, logo.width, logo.height);
     };
   }
 
