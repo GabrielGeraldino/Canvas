@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedService } from '../services/shared/shared.service';
+import { ApiService } from '../services/api/api.service';
 
 @Component({
   selector: 'app-home',
@@ -9,7 +10,7 @@ import { SharedService } from '../services/shared/shared.service';
 export class HomePage implements OnInit {
 
   canvas: any;
-  images = ['../assets/uniportPlanter11.jpg', '../assets/uniportPlanter12.jpg', '../assets/uniportPlanter13.jpg', '../assets/uniportPlanter14.jpg', '../assets/uniportPlanter15.jpg'];
+  images: any[];
   src: string;
   JlogoSrc = '../assets/jactoLogo.png';
   JlogoSrcNegative = '../assets/jacto-negative.png';
@@ -20,6 +21,8 @@ export class HomePage implements OnInit {
   logoPositions = ['top-right', 'top-left', 'bottom-right', 'bottom-left'];
   desc: string;
   coverLoaded: boolean;
+  filter: string;
+  trueImages = [];
 
   verticalText = 3570;
   horizontalText = 2380;
@@ -47,15 +50,24 @@ export class HomePage implements OnInit {
 
   constructor(
     private sharedService: SharedService,
-  ) { }
+    private apiService: ApiService,
+  ) { this.getImages(); }
 
   ngOnInit() {
     this.canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
   }
 
   ionViewWillEnter() {
-    this.drawImage();
     this.imgesLoaded = true;
+  }
+
+  getImages() {
+    this.apiService.get().toPromise()
+      .then((images: any[]) => {
+        this.trueImages = images;
+        this.images = images;
+        console.log(this.images);
+      });
   }
 
   async drawImage(position = 0, clearAll = true) {
@@ -76,6 +88,8 @@ export class HomePage implements OnInit {
     const img = new Image();
 
     img.src = this.src;
+    img.crossOrigin = 'anonymous';
+    console.log('this.src', this.src);
 
     img.onload = async () => {
       console.log('drawImage.onload');
@@ -94,6 +108,7 @@ export class HomePage implements OnInit {
       );
 
       this.addJLogo(stageCtx);
+      console.log('main position antes de add logo: ', this.mainPosition);
       this.addLogo(stageCtx, this.mainPosition);
       ///////////////////////////////////////////////////////////
       canvases.forEach(async (c, key) => {
@@ -155,8 +170,8 @@ export class HomePage implements OnInit {
 
   getAverageRGB(context: any) {
 
-    const blockSize = 5; // only visit every 5 pixels
-    const defaultRGB = { r: 0, g: 0, b: 0 }; // for non-supporting envs
+    const blockSize = 5;
+    const defaultRGB = { r: 0, g: 0, b: 0 };
     let data: any;
     let i = -4;
     let length: any;
@@ -167,7 +182,6 @@ export class HomePage implements OnInit {
     try {
       data = context.getImageData(0, 0, this.canvas.width, this.canvas.height);
     } catch (e) {
-      /* security error, img on diff domain */
       return defaultRGB;
     }
 
@@ -180,7 +194,6 @@ export class HomePage implements OnInit {
       rgb.b += data.data[i + 2];
     }
 
-    // ~~ used to floor values
     rgb.r = ~~(rgb.r / count);
     rgb.g = ~~(rgb.g / count);
     rgb.b = ~~(rgb.b / count);
@@ -315,7 +328,9 @@ export class HomePage implements OnInit {
   }
 
   changeMainframe(e: any) {
-    this.mainPosition = this.logoPositions.splice(e.target.id - 1, e.target.id, this.mainPosition).toString();
+    const oldPosition = this.mainPosition.toString();
+    this.mainPosition = this.logoPositions[e.target.id - 1].toString();
+    this.logoPositions[e.target.id - 1] = oldPosition.toString();
     this.drawImage(e.target.id, false);
   }
 
@@ -329,7 +344,7 @@ export class HomePage implements OnInit {
   }
 
   changeImg(index: number) {
-    this.src = this.images[index];
+    this.src = this.images[index].file.pt_BR.url;
     this.imageColor = this.getAverageRGB(this.canvas.getContext('2d'));
   }
 
@@ -348,7 +363,9 @@ export class HomePage implements OnInit {
   }
 
   async download() {
+    await this.sharedService.showLoading('Montando sua imagem');
     const url = this.canvas.toDataURL('image/jpg');
+    url.crossOrigin = 'anonymous';
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
@@ -356,20 +373,30 @@ export class HomePage implements OnInit {
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
+    await this.sharedService.dismissLoading();
   }
 
-  async resize() {
-    this.canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-    const context = this.canvas.getContext('2d');
-    // context.strokeRect(0, 0, 100, 100);
-    // const imgwidth = sourceimage.offsetWidth;
-    // const imgheight = sourceimage.offsetHeight;
-    context.drawImage(
-      this.canvas, 0, 0, 1, 1
-    );
+  // async resize() {
+  //   this.canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+  //   const context = this.canvas.getContext('2d');
+  //   // context.strokeRect(0, 0, 100, 100);
+  //   // const imgwidth = sourceimage.offsetWidth;
+  //   // const imgheight = sourceimage.offsetHeight;
+  //   context.drawImage(
+  //     this.canvas, 0, 0, 1, 1
+  //   );
 
-    await this.download();
+  //   await this.download();
 
+  // }
+
+  search() {
+    this.images = [];
+    this.trueImages.forEach(image => {
+      if (image.name.pt_BR.toLowerCase().includes(this.filter.toLowerCase())) {
+        this.images.push(image);
+      }
+    });
   }
 
 }

@@ -78,3 +78,18 @@ ion-radio {
 .social {
   cursor: pointer;
 }
+.image {
+  width: 183px;
+  height: 137px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.figContainer {
+  margin: 0px 20px;
+  display: inline-block;
+  text-decoration: none;
+  color: black;
+  font-size: medium;
+}
