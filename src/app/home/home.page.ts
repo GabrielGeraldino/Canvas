@@ -147,9 +147,8 @@ export class HomePage implements OnInit {
         }
 
       });
+      await this.sharedService.dismissLoading();
     };
-
-    this.sharedService.dismissLoading();
   }
 
 
@@ -371,15 +370,17 @@ export class HomePage implements OnInit {
   }
 
   async download() {
-    const url = this.canvas.toDataURL('image/jpg');
     await this.sharedService.showLoading('Montando sua imagem');
-    const a = document.createElement('a');
-    a.style.display = 'none';
-    a.href = url;
-    a.download = 'todo-1.jpg';
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
+    setTimeout(async () => {
+      const url = this.canvas.toDataURL('image/jpg');
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = 'todo-1.jpg';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
     await this.sharedService.dismissLoading();
   }
 
