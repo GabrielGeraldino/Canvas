@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedService } from '../services/shared/shared.service';
 import { ApiService } from '../services/api/api.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home',
@@ -51,6 +52,7 @@ export class HomePage implements OnInit {
   constructor(
     private sharedService: SharedService,
     private apiService: ApiService,
+    private sanitizer: DomSanitizer
   ) { this.getImages(); }
 
   ngOnInit() {
@@ -87,8 +89,14 @@ export class HomePage implements OnInit {
 
     const img = new Image();
 
+    // img.src = this.src;
+    // if (/^([\w]+\:)?\/\//.test(this.src) && this.src.indexOf(location.host) === -1) {
+    //   console.log('rodou');
+    //   img.crossOrigin = 'use-credentials'; // or "use-credentials"
+    // }
     img.src = this.src;
-    img.crossOrigin = 'anonymous';
+    img.crossOrigin = this.src;
+    // img.crossOrigin = 'anonymous';
     console.log('this.src', this.src);
 
     img.onload = async () => {
@@ -363,9 +371,8 @@ export class HomePage implements OnInit {
   }
 
   async download() {
-    await this.sharedService.showLoading('Montando sua imagem');
     const url = this.canvas.toDataURL('image/jpg');
-    url.crossOrigin = 'anonymous';
+    await this.sharedService.showLoading('Montando sua imagem');
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
