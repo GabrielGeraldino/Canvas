@@ -90,12 +90,12 @@ export class HomePage implements OnInit {
     const img = new Image();
 
     // img.src = this.src;
-    // if (/^([\w]+\:)?\/\//.test(this.src) && this.src.indexOf(location.host) === -1) {
-    //   console.log('rodou');
-    //   img.crossOrigin = 'use-credentials'; // or "use-credentials"
-    // }
+    if (/^([\w]+\:)?\/\//.test(this.src) && this.src.indexOf(location.host) === -1) {
+      console.log('rodou');
+      img.crossOrigin = 'anonymous'; // or "use-credentials"
+    }
     img.src = this.src;
-    img.crossOrigin = this.src;
+    // img.crossOrigin = this.src;
     // img.crossOrigin = 'anonymous';
     console.log('this.src', this.src);
 
@@ -147,9 +147,8 @@ export class HomePage implements OnInit {
         }
 
       });
+      this.sharedService.dismissLoading();
     };
-
-    this.sharedService.dismissLoading();
   }
 
 
@@ -371,27 +370,48 @@ export class HomePage implements OnInit {
   }
 
   async download() {
-    const url = this.canvas.toDataURL('image/jpg');
     await this.sharedService.showLoading('Montando sua imagem');
-    const a = document.createElement('a');
-    a.style.display = 'none';
-    a.href = url;
-    a.download = 'todo-1.jpg';
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
+    setTimeout(async () => {
+      const canvas = this.resize([1200, 624], this.canvas);
+      console.log('canvas; ', canvas);
+      const url = canvas.toDataURL('image/jpg');
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = 'todo-1.jpg';
+      console.log(a);
+
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
     await this.sharedService.dismissLoading();
   }
 
   // async resize() {
-  //   this.canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-  //   const context = this.canvas.getContext('2d');
-  //   // context.strokeRect(0, 0, 100, 100);
-  //   // const imgwidth = sourceimage.offsetWidth;
-  //   // const imgheight = sourceimage.offsetHeight;
-  //   context.drawImage(
-  //     this.canvas, 0, 0, 1, 1
-  //   );
+  //   const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+  //   let sx: number;
+  //   let sy: number;
+  //   const context = canvas.getContext('2d');
+  //   let oWidth = canvas.width;
+  //   let oHeight = canvas.height;
+  //   const dWidth = 1200;
+  //   const dHeight = 628;
+
+  //   const iWidth = Math.round(oHeight / dHeight * dWidth);
+  //   const iHeight = Math.round(oWidth / dWidth * dHeight);
+
+  //   if (oWidth > iWidth) { // cortar na largura
+  //     sx = (oWidth - iWidth) / 2;
+  //     oWidth = iWidth;
+  //   } else if (oHeight > iHeight) { // cortar na altura
+  //     sy = (oHeight - iHeight) / 2;
+  //     oHeight = iHeight;
+  //   }
+
+  //   canvas.width = dWidth;
+  //     canvas.height = dHeight;
+  //     context.drawImage(this.canvas, sx, sy, oWidth, oHeight, 0, 0, dWidth, dHeight);
 
   //   await this.download();
 
@@ -404,6 +424,34 @@ export class HomePage implements OnInit {
         this.images.push(image);
       }
     });
+  }
+
+
+
+  resize(size: any[], img: any) {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    let sx = 0;
+    let sy = 0;
+    let oWidth = img.width;
+    let oHeight = img.height;
+    const dWidth = size[0];
+    const dHeight = size[1];
+    const iWidth = Math.round(oHeight / dHeight * dWidth);
+    const iHeight = Math.round(oWidth / dWidth * dHeight);
+
+    if (oWidth > iWidth) {
+      sx = (oWidth - iWidth) / 2;
+      oWidth = iWidth;
+    } else if (oHeight > iHeight) {
+      sy = (oHeight - iHeight) / 2;
+      oHeight = iHeight;
+    }
+    canvas.width = dWidth;
+    canvas.height = dHeight;
+    context.drawImage(img, 0, 0, oWidth, oHeight, 0, 0, dWidth, dHeight);
+
+    return canvas;
   }
 
 }
