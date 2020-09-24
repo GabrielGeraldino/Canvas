@@ -42,6 +42,8 @@ export class HomePage implements OnInit {
   youtube = true;
   fontColor: string;
 
+  canvasOk = false;
+
   imagesOptions = {
     direction: 'horizontal',
     slidesPerView: 4.3,
@@ -75,8 +77,6 @@ export class HomePage implements OnInit {
   async drawImage(position = 0, clearAll = true) {
 
     await this.sharedService.showLoading('Estamos montando sua imagem');
-
-    this.completeDrawer = true;
 
     const stageCtx = this.canvas.getContext('2d');
 
@@ -144,10 +144,12 @@ export class HomePage implements OnInit {
           );
           // this.addJLogo(Ctx);
           this.addLogo(Ctx, this.logoPositions[canvases.indexOf(c)]);
+          !this.logo ? this.addDesc(stageCtx) : null;
         }
 
       });
       this.sharedService.dismissLoading();
+      this.canvasOk = true;
     };
   }
 
@@ -261,6 +263,8 @@ export class HomePage implements OnInit {
   }
 
   addDesc(Ctx, logoP: any[] = []) {
+    console.log('chamou o add desc');
+
     let horizontalP: number;
     let verticalP: number;
 
@@ -269,6 +273,8 @@ export class HomePage implements OnInit {
     Ctx.textAlign = 'center';
 
     if (this.descPosition === logoP[0]) {
+      console.log('entrou no primeiro if');
+
       horizontalP = logoP[1];
       verticalP = logoP[2];
       const logoHeight = logoP[3];
@@ -296,6 +302,7 @@ export class HomePage implements OnInit {
           break;
       }
     } else {
+      console.log('entrou no else');
       switch (this.descPosition) {
         case 'center':
           horizontalP = (this.canvas.width / 2);
@@ -369,16 +376,35 @@ export class HomePage implements OnInit {
     }
   }
 
-  async download() {
+  async checkDownload() {
     await this.sharedService.showLoading('Montando sua imagem');
+    let canvas: any;
+    if (this.facebook) {
+      canvas = this.resize([1200, 624], this.canvas);
+      this.download(canvas, 'Facebook-img');
+    }
+    if (this.instagram) {
+      canvas = this.resize([1080, 1080], this.canvas);
+      this.download(canvas, 'Instagram-img');
+    }
+    if (this.twitter) {
+      canvas = this.resize([800, 418], this.canvas);
+      this.download(canvas, 'Twitter-img');
+    }
+    if (this.youtube) {
+      canvas = this.resize([1280, 720], this.canvas);
+      this.download(canvas, 'YouTube-img');
+    }
+  }
+
+  async download(canvas: any, title: string) {
     setTimeout(async () => {
-      const canvas = this.resize([1200, 624], this.canvas);
       console.log('canvas; ', canvas);
       const url = canvas.toDataURL('image/jpg');
       const a = document.createElement('a');
       a.style.display = 'none';
       a.href = url;
-      a.download = 'todo-1.jpg';
+      a.download = title;
       console.log(a);
 
       document.body.appendChild(a);

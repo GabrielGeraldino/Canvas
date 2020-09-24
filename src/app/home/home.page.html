@@ -118,7 +118,7 @@
         </ion-grid>
 
         <ion-col class="centerCol">
-          <ion-button class="j-button" (click)="drawImage()">Gerar imagem</ion-button>
+          <ion-button class="j-button" (click)="drawImage()" [disabled]="!src">Gerar imagem</ion-button>
         </ion-col>
 
       </ion-row>
@@ -175,7 +175,8 @@
               </ion-item>
             </ion-row>
             <ion-row style="display: flex; justify-content: center;">
-              <ion-button class="j-button" expand="block" (click)="download()">Download</ion-button>
+              <ion-button class="j-button" expand="block" (click)="checkDownload()" [disabled]="!canvasOk">Download
+              </ion-button>
             </ion-row>
           </ion-grid>
         </ion-col>
