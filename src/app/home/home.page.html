@@ -19,7 +19,7 @@
                 name="resaleCoverPhoto" />
 
               <label style="text-align: center; width: 100%;" for="resaleCoverPhoto" *ngIf="!logo">
-                <ion-card>
+                <ion-card style="justify-content: center;">
                   <ion-item class="ion-text-center ion-padding-top" style="height: 200px; display: flex;" lines="none">
                     <ion-label text-wrap style="margin-top: 0px;">
                       <h3>
@@ -35,7 +35,7 @@
               </label>
 
               <label style="text-align: center; width: 100%;" for="resaleCoverPhoto" *ngIf="coverLoaded">
-                <ion-card style="height: 200px; display: flex; align-items: center;">
+                <ion-card style="height: 200px; display: flex; align-items: center; justify-content: center;">
                   <ion-img *ngIf="logo" [src]="logo" style="height: 124px"></ion-img>
                 </ion-card>
               </label>
