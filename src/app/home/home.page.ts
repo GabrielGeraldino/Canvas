@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { SharedService } from '../services/shared/shared.service';
 import { ApiService } from '../services/api/api.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { ModalController } from '@ionic/angular';
+import { DownloadModalComponent } from '../components/download-modal/download-modal/download-modal.component';
 
 @Component({
   selector: 'app-home',
@@ -36,10 +38,6 @@ export class HomePage implements OnInit {
 
   imageColor: any;
 
-  instagram = true;
-  facebook = true;
-  twitter = true;
-  youtube = true;
   fontColor: string;
 
   canvasOk = false;
@@ -54,7 +52,7 @@ export class HomePage implements OnInit {
   constructor(
     private sharedService: SharedService,
     private apiService: ApiService,
-    private sanitizer: DomSanitizer
+    private modalCtrl: ModalController
   ) { this.getImages(); }
 
   ngOnInit() {
@@ -376,25 +374,36 @@ export class HomePage implements OnInit {
     }
   }
 
-  async checkDownload() {
-    await this.sharedService.showLoading('Montando sua imagem');
-    let canvas: any;
-    if (this.facebook) {
-      canvas = this.resize([1200, 624], this.canvas);
-      this.download(canvas, 'Facebook-img');
-    }
-    if (this.instagram) {
-      canvas = this.resize([1080, 1080], this.canvas);
-      this.download(canvas, 'Instagram-img');
-    }
-    if (this.twitter) {
-      canvas = this.resize([800, 418], this.canvas);
-      this.download(canvas, 'Twitter-img');
-    }
-    if (this.youtube) {
-      canvas = this.resize([1280, 720], this.canvas);
-      this.download(canvas, 'YouTube-img');
-    }
+  async showModal() {
+    const modal = await this.modalCtrl.create({
+      component: DownloadModalComponent,
+      backdropDismiss: false,
+      cssClass: 'j-modal-2 modalHeigth',
+    });
+    await modal.present();
+    modal.onDidDismiss()
+      .then(async (data) => {
+        if (data.data.ok) {
+          await this.sharedService.showLoading('Montando sua imagem');
+          let canvas: any;
+          if (data.data.facebook) {
+            canvas = this.resize([1200, 624], this.canvas);
+            this.download(canvas, 'Facebook-img');
+          }
+          if (data.data.instagram) {
+            canvas = this.resize([1080, 1080], this.canvas);
+            this.download(canvas, 'Instagram-img');
+          }
+          if (data.data.twitter) {
+            canvas = this.resize([800, 418], this.canvas);
+            this.download(canvas, 'Twitter-img');
+          }
+          if (data.data.youtube) {
+            canvas = this.resize([1280, 720], this.canvas);
+            this.download(canvas, 'YouTube-img');
+          }
+        }
+      });
   }
 
   async download(canvas: any, title: string) {

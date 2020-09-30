@@ -1,90 +1,111 @@
 <ion-content [fullscreen]="true">
 
   <div class="j-card">
+    <ion-row>
+      <ion-col size="8">
+        <ion-list class="j-list">
 
-    <ion-list class="j-list">
-      <ion-row>
-        <ion-col class="centerCol">
-          <div>
-            <input required type="file" id="resaleCoverPhoto" class="fileInput" (change)="inputResaleLogo($event)"
-              name="resaleCoverPhoto" />
-            <label for="resaleCoverPhoto" class="labelStyle" *ngIf="!logo">
-              <ion-icon name="cloud-upload-outline" style="vertical-align: middle; margin: 10px; font-size: 20px;">
-              </ion-icon>Selecione a logo da revenda
-            </label>
-            <label for="resaleCoverPhoto" class="labelStyle" *ngIf="logo">
-              <ion-icon name="checkmark-outline" style="vertical-align: middle; margin: 10px; font-size: 20px;">
-              </ion-icon>Logo selecionada
-            </label>
-          </div>
-        </ion-col>
+          <ion-card-title class="j-card-title" style="text-align: center; " class="ion-no-padding">
+            <ion-item lines="full">
+              <ion-label class="j-header">
+                Logo da revenda <ion-text color="danger">*</ion-text>
+              </ion-label>
+            </ion-item>
+          </ion-card-title>
 
-        <!-- <ion-col class="centerCol">
-          <ion-item lines="full">
-            <ion-label>Categoria</ion-label>
-            <ion-select interface="popover">
-              <ion-select-option value="f">Categoria 1</ion-select-option>
-              <ion-select-option value="m">Categoria 2</ion-select-option>
-            </ion-select>
-          </ion-item>
-        </ion-col>
+          <ion-slides>
+            <ion-slide>
+              <input required type="file" id="resaleCoverPhoto" class="fileInput" (change)="inputResaleLogo($event)"
+                name="resaleCoverPhoto" />
 
-        <ion-col class="centerCol">
-          <ion-item lines="full">
-            <ion-label>Produto</ion-label>
-            <ion-select interface="popover">
-              <ion-select-option value="f">Produto 1</ion-select-option>
-              <ion-select-option value="m">Produto 2</ion-select-option>
-            </ion-select>
-          </ion-item>
-        </ion-col> -->
+              <label style="text-align: center; width: 100%;" for="resaleCoverPhoto" *ngIf="!logo">
+                <ion-card>
+                  <ion-item class="ion-text-center ion-padding-top" style="height: 200px; display: flex;" lines="none">
+                    <ion-label text-wrap style="margin-top: 0px;">
+                      <h3>
+                        <label style="font-size: 25px;">Adicionar logo da revenda</label>
+                      </h3>
 
-      </ion-row>
-    </ion-list>
+                      <h2>
+                        <ion-icon name="image-outline" style="font-size: 40px; margin-top: 15px;"></ion-icon>
+                      </h2>
+                    </ion-label>
+                  </ion-item>
+                </ion-card>
+              </label>
 
-    <ion-list class="j-list">
+              <label style="text-align: center; width: 100%;" for="resaleCoverPhoto" *ngIf="coverLoaded">
+                <ion-card style="height: 200px; display: flex; align-items: center;">
+                  <ion-img *ngIf="logo" [src]="logo" style="height: 124px"></ion-img>
+                </ion-card>
+              </label>
+            </ion-slide>
+          </ion-slides>
+        </ion-list>
 
-      <ion-row style="margin-top: 10px;">
-        <ion-searchbar debounce="500" (ionChange)="search()" [(ngModel)]="filter" placeholder="Filtrar imagens">
-        </ion-searchbar>
-        <ion-slides [options]="imagesOptions">
-          <ion-slide *ngFor="let img of images; let indexOfElement = index" style="text-align: center">
-            <div [class]="this.src === img?.file?.pt_BR?.url ? 'border' : null" class="figContainer">
-              <ion-img class="image" [style.backgroundImage]="'url(' + img?.file?.pt_BR?.thumb_url + ')'"
-                (click)="changeImg(indexOfElement)">
-              </ion-img>
-              <label>{{img?.name?.pt_BR}}</label>
-            </div>
-          </ion-slide>
-        </ion-slides>
-      </ion-row>
+        <ion-list class="j-list">
 
-      <!-- <ion-row style="margin-top: 30px;">
-        <ion-slides [options]="imagesOptions">
-          <ion-slide *ngFor="let img of images; let indexOfElement = index">
-            <ion-img [class]="this.src === img ? 'border' : null" [src]="img" style="width: 263px;"
-              (click)="changeImg(indexOfElement)"></ion-img>
-          </ion-slide>
-        </ion-slides>
-      </ion-row> -->
-    </ion-list>
+          <ion-card-title class="j-card-title" style="text-align: center; " class="ion-no-padding">
+            <ion-item lines="full">
+              <ion-label class="j-header">
+                Selecione a imagem do nosso banco <ion-text color="danger">*</ion-text>
+              </ion-label>
+              <ion-searchbar style="width: 250px;" class="ion-float-right" debounce="500" (ionChange)="search()"
+                [(ngModel)]="filter" placeholder="Filtrar imagens">
+              </ion-searchbar>
+            </ion-item>
+          </ion-card-title>
 
-    <ion-list class="j-list" style="padding: 3px !important;">
+          <ion-row style="margin-top: 10px;">
+            <ion-slides [options]="imagesOptions">
+              <ion-slide *ngFor="let img of images; let indexOfElement = index" style="text-align: center">
+                <div [class]="this.src === img?.file?.pt_BR?.url ? 'border' : null" class="figContainer">
+                  <ion-img class="image" [style.backgroundImage]="'url(' + img?.file?.pt_BR?.thumb_url + ')'"
+                    (click)="changeImg(indexOfElement)">
+                  </ion-img>
+                  <label>{{img?.name?.pt_BR}}</label>
+                </div>
+              </ion-slide>
+            </ion-slides>
+          </ion-row>
+        </ion-list>
 
-      <ion-row>
+        <div style="padding: 3px; margin: 16px;">
 
-        <ion-col>
-          <ion-item>
-            <ion-label position="floating">Digite algo (Opcional):</ion-label>
-            <ion-textarea rows="2" name="desc" [(ngModel)]="desc">
-            </ion-textarea>
-          </ion-item>
-        </ion-col>
+          <ion-row style="display: flex; justify-content: center;">
+            <ion-col size="2.6">
+              <ion-item style="border: solid 1px lightgray; border-radius: 6px;">
+                <ion-label position="floating">Digite algo</ion-label>
+                <ion-input [(ngModel)]="desc"></ion-input>
+              </ion-item>
+            </ion-col>
 
-        <ion-grid>
-          <ion-row>
-            <ion-col>
-              <ion-item lines="full">
+            <ion-col size="2.6">
+              <ion-grid class="ion-no-padding ion-no-margin" style="background-color: transparent; display: flex;
+            justify-content: center;">
+                <ion-row class=" ion-no-padding ion-no-margin">
+                  <ion-radio-group class="ion-no-padding ion-no-margin">
+                    <ion-col size="6">
+                      <ion-item lines="none" (click)="fontColor = 'white'" class="ion-no-padding ion-no-margin"
+                        style="--background: #f8f8f8;">
+                        <ion-label>Branco</ion-label>
+                        <ion-radio slot="start" value="white"></ion-radio>
+                      </ion-item>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-item lines="none" (click)="fontColor = 'black'" class="ion-no-padding ion-no-margin"
+                        style="--background: #f8f8f8;">
+                        <ion-label>Preto</ion-label>
+                        <ion-radio slot="start" value="black"></ion-radio>
+                      </ion-item>
+                    </ion-col>
+                  </ion-radio-group>
+                </ion-row>
+              </ion-grid>
+            </ion-col>
+
+            <ion-col size="2.6">
+              <ion-item style="border: solid 1px lightgray; border-radius: 6px;">
                 <ion-label>Posição do texto</ion-label>
                 <ion-select interface="popover" [(ngModel)]="descPosition" value="center">
                   <ion-select-option value="center">Centralizado</ion-select-option>
@@ -95,94 +116,56 @@
                 </ion-select>
               </ion-item>
             </ion-col>
+
           </ion-row>
 
+          <ion-col class="centerCol">
+            <ion-button class="j-button" (click)="drawImage()" [disabled]="!src">Gerar imagem</ion-button>
+          </ion-col>
+        </div>
+
+      </ion-col>
+
+      <ion-col size="4">
+
+        <ion-list class="j-list">
           <ion-grid>
-            <ion-row>
-              <ion-radio-group style="display: contents;">
-                <ion-col size="6">
-                  <ion-item lines="none" (click)="fontColor = 'white'">
-                    <ion-label>Branco</ion-label>
-                    <ion-radio slot="start" value="white"></ion-radio>
-                  </ion-item>
-                </ion-col>
-                <ion-col size="6">
-                  <ion-item lines="none" (click)="fontColor = 'black'">
-                    <ion-label>Preto</ion-label>
-                    <ion-radio slot="start" value="black"></ion-radio>
-                  </ion-item>
-                </ion-col>
-              </ion-radio-group>
+            <ion-row class="ion-justify-content-center">
+              <canvas id="myCanvas"
+                style="border: 1px solid var(--ion-color-primary); border-radius: 5px; width: 450px; padding: 5px;"></canvas>
             </ion-row>
-          </ion-grid>
-        </ion-grid>
 
-        <ion-col class="centerCol">
-          <ion-button class="j-button" (click)="drawImage()" [disabled]="!src">Gerar imagem</ion-button>
-        </ion-col>
+            <ion-row class="centerCol">
+              <ion-col size="6" class="centerCol">
+                <canvas id="1" (click)="changeMainframe($event)" name="CPreview"
+                  style="border: 1px solid black; width: 200px; height: 100px; margin: 20px"></canvas>
+              </ion-col>
+              <ion-col size="6" class="centerCol">
+                <canvas id="2" (click)="changeMainframe($event)" name="CPreview"
+                  style="border: 1px solid black; width: 200px; height: 100px; margin: 20px"></canvas>
+              </ion-col>
+            </ion-row>
 
-      </ion-row>
-    </ion-list>
+            <ion-row class="centerCol">
+              <ion-col size="6" class="centerCol">
+                <canvas id="3" (click)="changeMainframe($event)" name="CPreview"
+                  style="border: 1px solid black; width: 200px; height: 100px; margin: 20px"></canvas>
+              </ion-col>
+              <ion-col size="6" class="centerCol">
+                <canvas id="4" (click)="changeMainframe($event)" name="CPreview"
+                  style="border: 1px solid black; width: 200px; height: 100px; margin: 20px"></canvas>
+              </ion-col>
+            </ion-row>
 
-    <ion-list class="j-list">
-      <ion-row class="ion-justify-content-center">
-        <ion-col size="6" style="display: flex; justify-content: center;">
-          <canvas id="myCanvas" style="border: 1px solid black; width: 500px;"></canvas>
-        </ion-col>
-        <ion-col size="5" style="width: 100%; text-align: center;" class="ion-justify-content-center">
-          <canvas id="1" (click)="changeMainframe($event)" name="CPreview"
-            style="border: 1px solid black; width: 200px; margin: 20px"></canvas>
-          <canvas id="2" (click)="changeMainframe($event)" name="CPreview"
-            style="border: 1px solid black; width: 200px; margin: 20px"></canvas>
-          <canvas id="3" (click)="changeMainframe($event)" name="CPreview"
-            style="border: 1px solid black; width: 200px; margin: 20px"></canvas>
-          <canvas id="4" (click)="changeMainframe($event)" name="CPreview"
-            style="border: 1px solid black; width: 200px; margin: 20px"></canvas>
-        </ion-col>
-
-        <ion-col size="1" class="centerCol" style="display: flex; margin-top: 13px;">
-          <ion-grid style="height: 100%;">
-            <ion-row>
-              <ion-item lines="none" class="social" (click)="instagram = !instagram">
-                <ion-icon [color]="instagram ? 'primary' : ''" name="logo-instagram" style="margin-right: 5px;">
-                </ion-icon>
-                <ion-label>Instagram</ion-label>
-                <ion-checkbox checked="true" slot="start" value="instagram"></ion-checkbox>
-              </ion-item>
-            </ion-row>
-            <ion-row>
-              <ion-item lines="none" class="social" (click)="facebook = !facebook">
-                <ion-icon [color]="facebook ? 'primary' : ''" name="logo-facebook" style="margin-right: 5px;">
-                </ion-icon>
-                <ion-label>Facebook</ion-label>
-                <ion-checkbox checked="true" slot="start" value="facebook"></ion-checkbox>
-              </ion-item>
-            </ion-row>
-            <ion-row>
-              <ion-item lines="none" class="social" (click)="twitter = !twitter">
-                <ion-icon [color]="twitter ? 'primary' : ''" name="logo-twitter" style="margin-right: 5px;">
-                </ion-icon>
-                <ion-label>Twitter</ion-label>
-                <ion-checkbox checked="true" slot="start" value="twitter"></ion-checkbox>
-              </ion-item>
-            </ion-row>
-            <ion-row>
-              <ion-item lines="none" class="social" (click)="youtube = !youtube">
-                <ion-icon [color]="youtube ? 'primary' : ''" name="logo-youtube" style="margin-right: 5px;">
-                </ion-icon>
-                <ion-label>YouTube</ion-label>
-                <ion-checkbox checked="true" slot="start" value="youtube"></ion-checkbox>
-              </ion-item>
-            </ion-row>
-            <ion-row style="display: flex; justify-content: center;">
-              <ion-button class="j-button" expand="block" (click)="checkDownload()" [disabled]="!canvasOk">Download
+            <ion-row class="centerCol">
+              <ion-button class="j-button" expand="block" (click)="showModal()" [disabled]="!canvasOk">Baixar imagem
               </ion-button>
             </ion-row>
           </ion-grid>
-        </ion-col>
-      </ion-row>
-    </ion-list>
 
+        </ion-list>
 
+      </ion-col>
+    </ion-row>
   </div>
 </ion-content>

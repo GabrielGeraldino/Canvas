@@ -1,0 +1,59 @@
+<div style="background: #e6e6e6; border-radius: 13px 13px 0px 0px; margin-bottom: 0px;">
+  <ion-card-title class="j-card-title"
+    style="text-align: center; padding-top: 0 !important; padding-bottom: 0 !important;">
+    <ion-item lines="full">
+      <ion-label class="j-header">
+        Download
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button color="primary" (click)="close()" routerDirection="root">Cancelar</ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-card-title>
+</div>
+
+<ion-content style="display: flex; justify-content: center;">
+  <div class="j-card" style="display: flex; justify-content: center;">
+    <ion-row>
+      <ion-grid style="height: 100%;">
+        <ion-row>
+          <ion-item lines="none" class="social" (click)="instagram = !instagram">
+            <ion-icon [color]="instagram ? 'primary' : ''" name="logo-instagram" style="margin-right: 5px;">
+            </ion-icon>
+            <ion-label>Instagram</ion-label>
+            <ion-checkbox checked="true" slot="start" value="instagram"></ion-checkbox>
+          </ion-item>
+        </ion-row>
+        <ion-row>
+          <ion-item lines="none" class="social" (click)="facebook = !facebook">
+            <ion-icon [color]="facebook ? 'primary' : ''" name="logo-facebook" style="margin-right: 5px;">
+            </ion-icon>
+            <ion-label>Facebook</ion-label>
+            <ion-checkbox checked="true" slot="start" value="facebook"></ion-checkbox>
+          </ion-item>
+        </ion-row>
+        <ion-row>
+          <ion-item lines="none" class="social" (click)="twitter = !twitter">
+            <ion-icon [color]="twitter ? 'primary' : ''" name="logo-twitter" style="margin-right: 5px;">
+            </ion-icon>
+            <ion-label>Twitter</ion-label>
+            <ion-checkbox checked="true" slot="start" value="twitter"></ion-checkbox>
+          </ion-item>
+        </ion-row>
+        <ion-row>
+          <ion-item lines="none" class="social" (click)="youtube = !youtube">
+            <ion-icon [color]="youtube ? 'primary' : ''" name="logo-youtube" style="margin-right: 5px;">
+            </ion-icon>
+            <ion-label>YouTube</ion-label>
+            <ion-checkbox checked="true" slot="start" value="youtube"></ion-checkbox>
+          </ion-item>
+        </ion-row>
+
+        <ion-row style="display: flex; justify-content: center; margin-top: 15px;">
+          <ion-button class="j-button" (click)="dismissDownload()">Download</ion-button>
+        </ion-row>
+
+      </ion-grid>
+    </ion-row>
+  </div>
+</ion-content>

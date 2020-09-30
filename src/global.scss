@@ -42,3 +42,45 @@
   // height: 100%;
   // background: #e6e6e6;
 }
+
+.j-header {
+  text-align: center;
+  font-weight: bold !important;
+}
+
+.j-card-title {
+  color: #44464b;
+  font-size: 16px;
+}
+
+.j-modal .modal-wrapper {
+  border-radius: 7px;
+  @media (max-width: 600px) {
+    width: calc(100% - 14px);
+  }
+  width: 45%;
+  max-width: 600px;
+  background: transparent;
+  height: 80vh;
+  position: absolute;
+  display: block;
+  box-shadow: none;
+}
+
+.j-modal-2 .modal-wrapper {
+  border-radius: 7px;
+  @media (max-width: 600px) {
+    width: calc(100% - 14px);
+  }
+  width: 18%;
+  max-width: 600px;
+  background: transparent;
+  height: 80vh;
+  position: absolute;
+  display: block;
+  box-shadow: none;
+}
+
+.modalHeigth .modal-wrapper {
+  height: 37vh !important;
+}
