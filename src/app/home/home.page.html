@@ -2,7 +2,8 @@
 
   <div class="j-card">
     <ion-row>
-      <ion-col size="8">
+      <ion-col size="0.5" style="background-color: black;"></ion-col>
+      <ion-col size="7.5">
         <ion-list class="j-list">
 
           <ion-card-title class="j-card-title" style="text-align: center; " class="ion-no-padding">
@@ -18,12 +19,13 @@
               <input required type="file" id="resaleCoverPhoto" class="fileInput" (change)="inputResaleLogo($event)"
                 name="resaleCoverPhoto" />
 
-              <label style="text-align: center; width: 100%;" for="resaleCoverPhoto" *ngIf="!logo">
+              <label style="text-align: center; height: 120px;" for="resaleCoverPhoto" *ngIf="!logo">
                 <ion-card style="justify-content: center;">
-                  <ion-item class="ion-text-center ion-padding-top" style="height: 200px; display: flex;" lines="none">
+                  <ion-item class="ion-text-center ion-padding-top" style="height: 100px; width: 400px; display: flex;"
+                    lines="none">
                     <ion-label text-wrap style="margin-top: 0px;">
                       <h3>
-                        <label style="font-size: 25px;">Adicionar logo da revenda</label>
+                        <label style="font-size: 15px;">Adicionar logo da revenda</label>
                       </h3>
 
                       <h2>
@@ -34,9 +36,9 @@
                 </ion-card>
               </label>
 
-              <label style="text-align: center; width: 100%;" for="resaleCoverPhoto" *ngIf="coverLoaded">
-                <ion-card style="height: 200px; display: flex; align-items: center; justify-content: center;">
-                  <ion-img *ngIf="logo" [src]="logo" style="height: 124px"></ion-img>
+              <label style="text-align: center; height: 120px;" for="resaleCoverPhoto" *ngIf="coverLoaded">
+                <ion-card style="height: 100px; display: flex; align-items: center; justify-content: center;">
+                  <ion-img id="idimage" *ngIf="logo" [src]="logo" style="height: 100px"></ion-img>
                 </ion-card>
               </label>
             </ion-slide>
@@ -57,17 +59,39 @@
           </ion-card-title>
 
           <ion-row style="margin-top: 10px;">
-            <ion-slides [options]="imagesOptions">
-              <ion-slide *ngFor="let img of images; let indexOfElement = index" style="text-align: center">
+            <!-- <ion-button class="ion-float-right button-left">
+              <ion-icon name="chevron-back-outline" class="buttom-left"></ion-icon>
+            </ion-button> -->
+            <ion-slides [options]="imagesOptions" class="overflow">
+              <ion-slide *ngFor="let img of images1; let indexOfElement = index" style="text-align: center"
+                class="scrollVertically">
                 <div [class]="this.src === img?.file?.pt_BR?.url ? 'border' : null" class="figContainer">
                   <ion-img class="image" [style.backgroundImage]="'url(' + img?.file?.pt_BR?.thumb_url + ')'"
-                    (click)="changeImg(indexOfElement)">
+                    (click)="changeImg(indexOfElement,true)">
+                  </ion-img>
+                  <label>{{img?.name?.pt_BR}}</label>
+                </div>
+              </ion-slide>
+              <ion-icon name="chevron-forward-outline"></ion-icon>
+            </ion-slides>
+
+          </ion-row>
+          <ion-row>
+            <!-- <ion-button class="ion-float-right button-left">
+              <ion-icon name="chevron-back-outline" class="buttom-left"></ion-icon>
+            </ion-button> -->
+            <ion-slides [options]="imagesOptions" class="overflow">
+              <ion-slide *ngFor="let img of images2; let indexOfElement = index" style="text-align: center">
+                <div [class]="this.src === img?.file?.pt_BR?.url ? 'border' : null" class="figContainer">
+                  <ion-img class="image" [style.backgroundImage]="'url(' + img?.file?.pt_BR?.thumb_url + ')'"
+                    (click)="changeImg(indexOfElement,false)">
                   </ion-img>
                   <label>{{img?.name?.pt_BR}}</label>
                 </div>
               </ion-slide>
             </ion-slides>
           </ion-row>
+
         </ion-list>
 
         <div style="padding: 3px; margin: 16px;">

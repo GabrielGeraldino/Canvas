@@ -13,7 +13,10 @@ import { DownloadModalComponent } from '../components/download-modal/download-mo
 export class HomePage implements OnInit {
 
   canvas: any;
-  images: any[];
+  images1 = [];
+  images2 = [];
+  img1: boolean;
+  img2: boolean;
   src: string;
   JlogoSrc = '../assets/jactoLogo.png';
   JlogoSrcNegative = '../assets/jacto-negative.png';
@@ -46,7 +49,7 @@ export class HomePage implements OnInit {
     direction: 'horizontal',
     slidesPerView: 4.3,
     freeMode: true,
-    spaceBetween: 0.2
+    spaceBetween: 0.2,
   };
 
   constructor(
@@ -63,13 +66,25 @@ export class HomePage implements OnInit {
     this.imgesLoaded = true;
   }
 
-  getImages() {
-    this.apiService.get().toPromise()
+  async getImages() {
+    await this.apiService.get().toPromise()
       .then((images: any[]) => {
         this.trueImages = images;
-        this.images = images;
-        console.log(this.images);
+        // this.images1 = images;
+        // console.log(this.images1);
+
+        const length1 = Number((images.length / 2.).toFixed(0));
+        console.log('length1 ', length);
+        for (let index = 0; index < length1; index++) {
+          this.images1.push(images[index]);
+        }
+
+        for (let index = length1 / 2; index < images.length; index++) {
+          this.images2.push(images[index]);
+        }
       });
+
+
   }
 
   async drawImage(position = 0, clearAll = true) {
@@ -237,7 +252,7 @@ export class HomePage implements OnInit {
             break;
           case 'top-right':
             horizontalP = ((this.canvas.width - this.canvas.width / 4) - (logo.width / 2));
-            verticalP = (this.canvas.height / 4 - (logo.height / 2));
+            verticalP = (this.canvas.height / 4 - (logo.height / 3.3));
             break;
           case 'top-left':
             horizontalP = (this.canvas.width / 4 - (logo.width / 2));
@@ -355,20 +370,23 @@ export class HomePage implements OnInit {
     stageCtx.restore();
   }
 
-  changeImg(index: number) {
-    this.src = this.images[index].file.pt_BR.url;
+  changeImg(index: number, img: boolean) {
+    img ? this.src = this.images1[index].file.pt_BR.url : this.src = this.images2[index].file.pt_BR.url;
     this.imageColor = this.getAverageRGB(this.canvas.getContext('2d'));
   }
 
   inputResaleLogo(event: any) {
     this.coverFilename = /[.]/.exec(event.target.value) ? `.${/[^.]+$/.exec(event.target.value)}` : '';
+
     if (this.sharedService.checkImg(this.coverFilename)) {
       const reader = new FileReader();
       reader.onload = (imageToLoad: any) => {
+        console.log('imagetoLoad', imageToLoad);
         this.logo = imageToLoad.target.result;
       };
       reader.readAsDataURL(event.target.files[0]);
       this.coverLoaded = true;
+
 
       return this.logo;
     }
@@ -453,10 +471,11 @@ export class HomePage implements OnInit {
   // }
 
   search() {
-    this.images = [];
+    this.images1 = [];
+    this.images2 = [];
     this.trueImages.forEach(image => {
       if (image.name.pt_BR.toLowerCase().includes(this.filter.toLowerCase())) {
-        this.images.push(image);
+        this.images1.push(image);
       }
     });
   }
