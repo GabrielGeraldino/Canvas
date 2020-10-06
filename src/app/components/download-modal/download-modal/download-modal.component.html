@@ -48,6 +48,15 @@
             <ion-checkbox checked="true" slot="start" value="youtube"></ion-checkbox>
           </ion-item>
         </ion-row>
+        <ion-row>
+          <ion-item lines="none" class="social" (click)="original = !original">
+            <ion-icon [color]="original ? 'primary' : ''" name="image-outline" style="margin-right: 5px;">
+            </ion-icon>
+            <ion-label>Original</ion-label>
+            <ion-checkbox checked="false" slot="start" value="original"></ion-checkbox>
+          </ion-item>
+        </ion-row>
+
 
         <ion-row style="display: flex; justify-content: center; margin-top: 15px;">
           <ion-button class="j-button" (click)="dismissDownload()">Download</ion-button>

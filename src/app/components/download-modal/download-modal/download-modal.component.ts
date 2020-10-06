@@ -12,6 +12,7 @@ export class DownloadModalComponent implements OnInit {
   facebook = true;
   twitter = true;
   youtube = true;
+  original = false;
 
   constructor(
     private modalCtrl: ModalController
@@ -25,7 +26,8 @@ export class DownloadModalComponent implements OnInit {
       instagram: this.instagram,
       facebook: this.facebook,
       twitter: this.twitter,
-      youtube: this.youtube
+      youtube: this.youtube,
+      original: this.original
     });
   }
 

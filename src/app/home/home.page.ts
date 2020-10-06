@@ -74,7 +74,6 @@ export class HomePage implements OnInit {
         // console.log(this.images1);
 
         const length1 = Number((images.length / 2.).toFixed(0));
-        console.log('length1 ', length);
         for (let index = 0; index < length1; index++) {
           this.images1.push(images[index]);
         }
@@ -89,6 +88,7 @@ export class HomePage implements OnInit {
 
   async drawImage(position = 0, clearAll = true) {
 
+    //aqui
     await this.sharedService.showLoading('Estamos montando sua imagem');
 
     const stageCtx = this.canvas.getContext('2d');
@@ -104,19 +104,15 @@ export class HomePage implements OnInit {
 
     // img.src = this.src;
     if (/^([\w]+\:)?\/\//.test(this.src) && this.src.indexOf(location.host) === -1) {
-      console.log('rodou');
       img.crossOrigin = 'anonymous'; // or "use-credentials"
     }
     img.src = this.src;
     // img.crossOrigin = this.src;
     // img.crossOrigin = 'anonymous';
-    console.log('this.src', this.src);
 
     img.onload = async () => {
-      console.log('drawImage.onload');
       if (img.width > this.canvas.width) {
         this.ratio = this.canvas.width / img.width;
-
       } else if (img.height > this.canvas.height) {
         this.ratio = this.canvas.height / img.height;
       }
@@ -129,7 +125,6 @@ export class HomePage implements OnInit {
       );
 
       this.addJLogo(stageCtx);
-      console.log('main position antes de add logo: ', this.mainPosition);
       this.addLogo(stageCtx, this.mainPosition);
       ///////////////////////////////////////////////////////////
       canvases.forEach(async (c, key) => {
@@ -241,6 +236,7 @@ export class HomePage implements OnInit {
           logoRatio = this.canvas.height / (logo.height * 3);
         }
 
+        console.log('LOGO RATIO: ', logoRatio);
 
         logo.width = logo.width * (logoRatio);
         logo.height = logo.height * (logoRatio);
@@ -276,8 +272,6 @@ export class HomePage implements OnInit {
   }
 
   addDesc(Ctx, logoP: any[] = []) {
-    console.log('chamou o add desc');
-
     let horizontalP: number;
     let verticalP: number;
 
@@ -286,8 +280,6 @@ export class HomePage implements OnInit {
     Ctx.textAlign = 'center';
 
     if (this.descPosition === logoP[0]) {
-      console.log('entrou no primeiro if');
-
       horizontalP = logoP[1];
       verticalP = logoP[2];
       const logoHeight = logoP[3];
@@ -315,7 +307,6 @@ export class HomePage implements OnInit {
           break;
       }
     } else {
-      console.log('entrou no else');
       switch (this.descPosition) {
         case 'center':
           horizontalP = (this.canvas.width / 2);
@@ -375,19 +366,35 @@ export class HomePage implements OnInit {
     this.imageColor = this.getAverageRGB(this.canvas.getContext('2d'));
   }
 
-  inputResaleLogo(event: any) {
+  async inputResaleLogo(event: any) {
+
+    let image = new Image();
+
+    console.log('event: ', event);
+
     this.coverFilename = /[.]/.exec(event.target.value) ? `.${/[^.]+$/.exec(event.target.value)}` : '';
 
     if (this.sharedService.checkImg(this.coverFilename)) {
       const reader = new FileReader();
       reader.onload = (imageToLoad: any) => {
-        console.log('imagetoLoad', imageToLoad);
-        this.logo = imageToLoad.target.result;
+
+        image.src = imageToLoad.target.result;
+
+        image.onload = (() => {
+          console.log('WIDTH ' + image.width + ' HEIGTH ' + image.height);
+          if (image.height > 400) {
+            // image.height = 100;
+            this.logo = image.src;
+            console.log('WIDTH ' + image.width + ' HEIGTH ' + image.height);
+          } else {
+            this.logo = image.src;
+          }
+        });
+
       };
+
       reader.readAsDataURL(event.target.files[0]);
       this.coverLoaded = true;
-
-
       return this.logo;
     }
   }
@@ -403,36 +410,66 @@ export class HomePage implements OnInit {
       .then(async (data) => {
         if (data.data.ok) {
           await this.sharedService.showLoading('Montando sua imagem');
-          let canvas: any;
           if (data.data.facebook) {
-            canvas = this.resize([1200, 624], this.canvas);
-            this.download(canvas, 'Facebook-img');
+            const canvas = this.resize([1200, 624], this.canvas);
+            await this.download(canvas, 'Facebook-img');
           }
           if (data.data.instagram) {
-            canvas = this.resize([1080, 1080], this.canvas);
-            this.download(canvas, 'Instagram-img');
+            const canvas = this.resize([1080, 1080], this.canvas);
+            await this.download(canvas, 'Instagram-img');
           }
           if (data.data.twitter) {
-            canvas = this.resize([800, 418], this.canvas);
-            this.download(canvas, 'Twitter-img');
+            const canvas = this.resize([800, 418], this.canvas);
+            await this.download(canvas, 'Twitter-img');
           }
           if (data.data.youtube) {
-            canvas = this.resize([1280, 720], this.canvas);
-            this.download(canvas, 'YouTube-img');
+            const canvas = this.resize([1280, 720], this.canvas);
+            await this.download(canvas, 'YouTube-img');
+          }
+          if (data.data.original) {
+            await this.download(this.canvas, 'Original-img');
           }
         }
       });
   }
 
   async download(canvas: any, title: string) {
+
+    await this.sharedService.showLoading('Montando sua imagem');
+    // setTimeout(async () => {
+    //   const canvas = this.resize([1280, 720], this.canvas);
+    //   console.log('canvas; ', canvas);
+    //   const url = canvas.toDataURL('image/jpg');
+    //   const a = document.createElement('a');
+    //   a.style.display = 'none';
+    //   a.href = url;
+    //   a.download = 'todo-1.jpg';
+    //   console.log(a);
+
+    //   document.body.appendChild(a);
+    //   a.click();
+    //   window.URL.revokeObjectURL(url);
+    // });
+    // await this.sharedService.dismissLoading();
+
+    // // setTimeout(async () => {
+    // //   const url = this.canvas.toDataURL('image/jpg');
+    // //   const a = document.createElement('a');
+    // //   a.style.display = 'none';
+    // //   a.href = url;
+    // //   a.download = 'todo-1.jpg';
+    // //   document.body.appendChild(a);
+    // //   a.click();
+    // //   window.URL.revokeObjectURL(url);
+    // // });
+    // // await this.sharedService.dismissLoading();
+
     setTimeout(async () => {
-      console.log('canvas; ', canvas);
       const url = canvas.toDataURL('image/jpg');
       const a = document.createElement('a');
       a.style.display = 'none';
       a.href = url;
       a.download = title;
-      console.log(a);
 
       document.body.appendChild(a);
       a.click();
@@ -440,35 +477,6 @@ export class HomePage implements OnInit {
     });
     await this.sharedService.dismissLoading();
   }
-
-  // async resize() {
-  //   const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-  //   let sx: number;
-  //   let sy: number;
-  //   const context = canvas.getContext('2d');
-  //   let oWidth = canvas.width;
-  //   let oHeight = canvas.height;
-  //   const dWidth = 1200;
-  //   const dHeight = 628;
-
-  //   const iWidth = Math.round(oHeight / dHeight * dWidth);
-  //   const iHeight = Math.round(oWidth / dWidth * dHeight);
-
-  //   if (oWidth > iWidth) { // cortar na largura
-  //     sx = (oWidth - iWidth) / 2;
-  //     oWidth = iWidth;
-  //   } else if (oHeight > iHeight) { // cortar na altura
-  //     sy = (oHeight - iHeight) / 2;
-  //     oHeight = iHeight;
-  //   }
-
-  //   canvas.width = dWidth;
-  //     canvas.height = dHeight;
-  //     context.drawImage(this.canvas, sx, sy, oWidth, oHeight, 0, 0, dWidth, dHeight);
-
-  //   await this.download();
-
-  // }
 
   search() {
     this.images1 = [];
@@ -479,8 +487,6 @@ export class HomePage implements OnInit {
       }
     });
   }
-
-
 
   resize(size: any[], img: any) {
     const canvas = document.createElement('canvas');
@@ -503,7 +509,7 @@ export class HomePage implements OnInit {
     }
     canvas.width = dWidth;
     canvas.height = dHeight;
-    context.drawImage(img, 0, 0, oWidth, oHeight, 0, 0, dWidth, dHeight);
+    context.drawImage(img, 0, 0, dWidth, dHeight);
 
     return canvas;
   }
